@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import AddTodo from './AddTodo'
 import TodoList from './TodoList'
@@ -63,13 +63,13 @@ function App() {
           </NavItem>
         </NavItems>
       </Nabvar>
-      {/* <Wrapper>
-        <Switch>
-          <Route exact path="/todos" component={TodoList} />
-          <Route exact path="/todos/new" component={AddTodo} />
-          <Route path="/todos/:id/edit" component={EditTodo} />
-        </Switch>
-      </Wrapper> */}
+      <Wrapper>
+        <Routes> {/* SwitchをRoutesに変更 */}
+          <Route path="/todos" element={<TodoList />} />
+          <Route path="/todos/new" element={<AddTodo />} />
+          <Route path="/todos/:id/edit" element={<EditTodo />} />
+        </Routes>
+      </Wrapper>
     </>
   )
 }
