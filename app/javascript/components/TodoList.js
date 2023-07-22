@@ -70,10 +70,63 @@ const EditButton = styled.span`
 `
 
 function TodoList() {
+  const [todos, setTodos] = useState([])
+  const [searchName, setSearchName] = useState('')
+
+  useEffect(() => {
+    axios.get('/api/v1/todos.json')
+    .then(resp => {
+      console.log(resp.data)
+      setTodos(resp.data);
+    })
+    .catch(e => {
+      console.log(e);
+    })
+  }, [])
+
+  const removeAllTodos = () => {
+    const sure = window.confirm('Are you sure?');
+    if (sure) {
+      axios.delete('/api/v1/todos/destroy_all')
+      .then(resp => {
+        setTodos([])
+      })
+      .catch(e => {
+        console.log(e)
+      })
+    }
+  }
+
+  const updateIsCompleted = (index, val) => {
+    var data = {
+      id: val.id,
+      name: val.name,
+      is_completed: !val.is_completed
+    }
+    axios.patch(`/api/v1/todos/${val.id}`, data)
+    .then(resp => {
+      const newTodos = [...todos]
+      newTodos[index].is_completed = resp.data.is_completed
+      setTodos(newTodos)
+    })
+  }
+
   return (
-    <div>
-      TodoList
-    </div>
+    <>
+      <h1>Todo List</h1>
+      <SearchAndButton>
+        <SearchForm 
+          type="text"
+          placeholder="Search todo..."
+          onChange={event => {
+            setSearchName(event.target.value)
+          }}
+        />
+        <RemoveAllButton onClick={removeAllTodos}>
+          Remove All
+        </RemoveAllButton>
+      </SearchAndButton>
+    </>
   )
 }
 
