@@ -3,6 +3,7 @@ import axios from 'axios'
 import styled from 'styled-components'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { useNavigate } from "react-router-dom"
 
 const InputName = styled.input`
   font-size: 20px;
@@ -52,7 +53,80 @@ const DeleteButton = styled.button`
   cursor: pointer;
 `
 
+toast.configure();
+
 function EditTodo() {
+  const initialTodoState = {
+    id: null,
+    name: "",
+    is_completed: false
+  };
+
+  const [currentTodo, setCurrentTodo] = useState(initialTodoState)
+  const navigate = useNavigate();
+
+  const notify = () => {
+    toast.success("Todo successfully updated!", {
+      position: "bottom-center",
+      hideProgressBar: true
+    });
+  }
+
+  const getTodo = id => {
+    axios.get(`/api/v1/todos/${id}`)
+    .then(resp => {
+      setCurrentTodo(resp.data)
+    })
+    .catch(e => {
+      console.log(e)
+    })
+  }
+
+  useEffect(() => {
+    getTodo(props.match.params.id)
+  }, [props.match.params.id])
+
+  const handleInputChange = event => {
+    const { name, value } = event.target;
+    setCurrentTodo({...currentTodo, [name]: value })
+  }
+
+  const updateIsCompleted = val => {
+    var data = {
+      id: val.id,
+      name: val.name,
+      is_completed: !val.is_completed
+    }
+    axios.patch(`/api/v1/todos/${val.id}`, data)
+    .then(resp => {
+      setCurrentTodo(resp.data)
+    })
+  }
+
+  const updateTodo = () => {
+    axios.patch(`/api/v1/todos/${currentTodo.id}`, currentTodo)
+    .then(resp => {
+      notify()
+      navigate("/todos")
+    })
+    .catch(e => {
+      console.log(e)
+    })
+  }
+
+  const deleteTodo = () => {
+    const sure = window.confirm('Are you sure?')
+    if (sure) {
+      axios.delete(`/api/v1/todos/${currentTodo.id}`)
+      .then(resp => {
+        navigate("/todos")
+      })
+      .catch(e => {
+        console.log(e)
+      })
+    }
+  }
+
   return (
     <div>
       EditTodo
