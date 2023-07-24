@@ -128,9 +128,41 @@ function EditTodo() {
   }
 
   return (
-    <div>
-      EditTodo
-    </div>
+    <>
+      <h1>Editing Todo</h1>
+      <div>
+        <div>
+          <label htmlFor="name">Current Name</label>
+          <InputName
+            type="text"
+            name="name"
+            value={currentTodo.name}
+            onChange={handleInputChange}
+          />
+          <div>
+            <span>Current Status</span><br/>
+            <CurrentStatus>
+              {currentTodo.is_completed ? "completed" : "uncompleted" }
+            </CurrentStatus>
+          </div>
+        </div>
+        {currentTodo.is_completed ? (
+          <IsCompletedButton onClick={() => updateIsCompleted(currentTodo)}>
+            uncompleted
+          </IsCompletedButton>
+        ) : (
+          <IsCompletedButton onClick={() => updateIsCompleted(currentTodo)}>
+            Completed
+          </IsCompletedButton>
+        )}
+        <EditButton onClick={updateTodo}>
+          updated
+        </EditButton>
+        <DeleteButton onClick={deleteTodo}>
+          Delete
+        </DeleteButton>
+      </div>
+    </>
   )
 }
 
