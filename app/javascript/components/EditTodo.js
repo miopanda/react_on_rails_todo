@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react"
-import axios from 'axios'
-import styled from 'styled-components'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { useNavigate } from "react-router-dom"
+import React, { useState, useEffect } from "react";
+import axios from 'axios';
+import styled from 'styled-components';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate, useParams } from "react-router-dom";
 
 const InputName = styled.input`
   font-size: 20px;
@@ -64,6 +64,7 @@ function EditTodo() {
 
   const [currentTodo, setCurrentTodo] = useState(initialTodoState)
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const notify = () => {
     toast.success("Todo successfully updated!", {
@@ -72,7 +73,7 @@ function EditTodo() {
     });
   }
 
-  const getTodo = id => {
+  const getTodo = (id) => {
     axios.get(`/api/v1/todos/${id}`)
     .then(resp => {
       setCurrentTodo(resp.data)
@@ -83,8 +84,8 @@ function EditTodo() {
   }
 
   useEffect(() => {
-    getTodo(props.match.params.id)
-  }, [props.match.params.id])
+    getTodo(id)
+  }, [id])
 
   const handleInputChange = event => {
     const { name, value } = event.target;
@@ -166,4 +167,4 @@ function EditTodo() {
   )
 }
 
-export default EditTodo
+export default EditTodo;
